@@ -44,6 +44,7 @@
   <ItemGroup>
     <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.3.5.0\lib\net40\Autofac.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="AutofacContrib.CommonServiceLocator, Version=2.5.2.830, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -95,13 +96,7 @@
     <None Include="packages.config" />
     <None Include="web.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Reference\AutofacContrib.CommonServiceLocator.dll" />
-    <Content Include="Reference\AutofacContrib.SolrNet.dll" />
-    <Content Include="Reference\Microsoft.Practices.ServiceLocation.dll" />
-    <Content Include="Reference\Sitecore.ContentSearch.SolrProvider.dll" />
-    <Content Include="Reference\SolrNet.dll" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
