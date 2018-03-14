@@ -50,23 +50,22 @@ namespace Sitecore.Support.ContentSearch.SolrProvider.AutoFacIntegration
             this.builder.RegisterModule((IModule)new SolrNetModule(this.Cores));
             this.builder.RegisterType<SolrFieldBoostingDictionarySerializer>().As<ISolrDocumentSerializer<Dictionary<string, object>>>();
             this.builder.RegisterType<Sitecore.ContentSearch.SolrProvider.Parsers.SolrSchemaParser>().As<ISolrSchemaParser>();
-            if (SolrContentSearchManager.EnableHttpCache)
+            foreach (SolrServerElement solrServerElement in this.Cores)
             {
-                this.builder.RegisterType<HttpRuntimeCache>().As<ISolrCache>();
-                foreach (SolrServerElement solrServerElement in this.Cores)
+              string serviceName = solrServerElement.Id + typeof(SolrConnection);
+              NamedParameter[] parameters = new NamedParameter[]
+              {
+                new NamedParameter("serverURL", solrServerElement.Url)
+              };
+              this.builder.RegisterType(typeof(SolrConnection)).Named(serviceName, typeof(ISolrConnection)).WithParameters(parameters).OnActivated(delegate (IActivatedEventArgs<object> args)
+              {
+                if (SolrContentSearchManager.EnableHttpCache)
                 {
-                    string serviceName = solrServerElement.Id + typeof(SolrConnection);
-                    NamedParameter[] parameters = new NamedParameter[]
-                    {
-                        new NamedParameter("serverURL", solrServerElement.Url)
-                    };
-                    this.builder.RegisterType(typeof(SolrConnection)).Named(serviceName, typeof(ISolrConnection)).WithParameters(parameters).OnActivated(delegate (IActivatedEventArgs<object> args)
-                    {
-                        ((SolrConnection)args.Instance).Cache = args.Context.Resolve<ISolrCache>();
-                        int intSetting = Settings.GetIntSetting("Support.ContentSearch.Solr.ConnectionTimeout", 30000);
-                        ((SolrConnection)args.Instance).Timeout = intSetting;
-                    });
+                  ((SolrConnection)args.Instance).Cache = args.Context.Resolve<ISolrCache>();
                 }
+                int intSetting = Settings.GetIntSetting("Support.ContentSearch.Solr.ConnectionTimeout", 30000);
+                ((SolrConnection)args.Instance).Timeout = intSetting;
+              });
             }
             this.container = this.builder.Build(ContainerBuildOptions.None);
             ServiceLocator.SetLocatorProvider((ServiceLocatorProvider)(() => (IServiceLocator)new AutofacServiceLocator((IComponentContext)this.container)));
